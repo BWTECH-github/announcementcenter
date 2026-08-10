@@ -13,9 +13,9 @@
 	<category>tools</category>
 	<screenshot>https://raw.githubusercontent.com/owncloud/promo/e1dd604d66b4c5f765579b4c160de3268169ea3c/ownCloud%20logo%20square.png</screenshot>
 
-	<website>https://github.com/GrossLukas/announcementcenter</website>
-	<bugs>https://github.com/GrossLukas/announcementcenter/issues</bugs>
-	<repository type="git">https://github.com/GrossLukas/announcementcenter.git</repository>
+	<website>https://github.com/BWTECH-github/announcementcenter</website>
+	<bugs>https://github.com/BWTECH-github/announcementcenter/issues</bugs>
+	<repository type="git">https://github.com/BWTECH-github/announcementcenter.git</repository>
 
 	<dependencies>
 		<owncloud min-version="11" max-version="11.99" />
