@@ -1,14 +1,9 @@
 # Announcement Center
 
-An Announcement Center app for ownCloud (allows administrators to publish announcements for users)  
-Depends on ['notifications'](https://github.com/owncloud/notifications) backend
+An Announcement Center app for owncloud.online (allows administrators to publish announcements for users)  
+Depends on [notifications](https://github.com/BWTECH-github/notifications) backend
 
 ## QA metrics on master branch:
-
-[![Build Status](https://drone.owncloud.com/api/badges/owncloud/announcementcenter/status.svg?branch=master)](https://drone.owncloud.com/owncloud/announcementcenter)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=owncloud_announcementcenter&metric=alert_status)](https://sonarcloud.io/dashboard?id=owncloud_announcementcenter)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=owncloud_announcementcenter&metric=security_rating)](https://sonarcloud.io/dashboard?id=owncloud_announcementcenter)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=owncloud_announcementcenter&metric=coverage)](https://sonarcloud.io/dashboard?id=owncloud_announcementcenter)
 
 ---
 
