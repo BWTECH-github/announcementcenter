@@ -54,17 +54,45 @@
  * Der Löschen-Schalter stand auf opacity: 0 und erschien erst beim Überfahren
  * mit der Maus. Auf einem Tablet oder Telefon gibt es kein Überfahren: dort
  * war er unauffindbar, bis man ihn zufällig traf - und löschte dann sofort.
- * Er bleibt jetzt sichtbar, aber zurückhaltend, und tritt beim Überfahren und
- * bei Tastaturfokus hervor.
+ *
+ * Er ist jetzt ein rundes Feld mit Papierkorb: im Ruhezustand zurückhaltend,
+ * beim Überfahren und bei Tastaturfokus rot. 32 Pixel sind die kleinste Fläche,
+ * die sich auf einem Berührungsbildschirm sicher treffen lässt, ohne dass der
+ * Schalter neben der Autorenzeile klobig wirkt.
  */
-.announcementcenter .delete-link a {
-	color: var(--oco-text-secondary, #5b6675);
-	text-decoration: none;
+.announcementcenter .delete-link {
+	display: inline-flex;
+	vertical-align: middle;
+	margin-left: 8px;
 }
 
-.announcementcenter .section:hover .delete-link a,
-.announcementcenter .delete-link a:hover,
-.announcementcenter .delete-link a:focus {
-	color: var(--oco-danger-ink, #b23b3b);
-	text-decoration: underline;
+.announcementcenter .delete-link a.announcement-delete {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: 1px solid var(--oco-danger-border, #e8cccc);
+	border-radius: 50%;
+	background-color: var(--oco-danger-bg, #FBEDED);
+	background-image: url('../img/delete-red.svg');
+	background-position: center;
+	background-size: 16px 16px;
+	background-repeat: no-repeat;
+	opacity: 1;
+	transition: none;
+}
+
+/*
+ * Beim Überfahren und bei Tastaturfokus wird der Kreis kräftiger - der
+ * Schalter ist also immer zu sehen, zeigt aber trotzdem an, dass er gemeint
+ * ist.
+ */
+.announcementcenter .section:hover .delete-link a.announcement-delete,
+.announcementcenter .delete-link a.announcement-delete:hover,
+.announcementcenter .delete-link a.announcement-delete:focus {
+	background-color: var(--oco-danger-ink, #b23b3b);
+	border-color: var(--oco-danger-ink, #b23b3b);
+	background-image: url('../img/delete-white.svg');
 }

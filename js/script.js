@@ -43,8 +43,14 @@
 		 * Der Löschen-Schalter ist ein Anker mit role="button" - so verlangt es
 		 * die Hausregel für Anker, die wie Schalter wirken - und trägt den
 		 * Betreff im Namen. Ohne ihn stehen in der Linkliste einer Sprachausgabe
-		 * fünf gleichlautende Einträge "Löschen", und niemand weiß, welcher
+		 * mehrere gleichlautende Einträge "Löschen", und niemand weiß, welcher
 		 * welche Ankündigung trifft.
+		 *
+		 * Er zeigt einen Papierkorb statt des Wortes: dasselbe Muster, das der
+		 * Kern für Symbolschalter benutzt (siehe die Schlagwortzeile in
+		 * core/js/systemtags/systemtagsinputfield.js). Der zugängliche Name
+		 * hängt deshalb am aria-label, das verdrahten() setzt - ohne ihn wäre
+		 * der Schalter für eine Sprachausgabe namenlos.
 		 */
 		handlebarTemplate: '<div class="section">' +
 				'<h2>{{{subject}}}</h2>' +
@@ -52,10 +58,8 @@
 					'{{author}} — {{time}}' +
 					'{{#if announcementId}}' +
 						'<span class="delete-link">' +
-							' — ' +
-							'<a href="#" role="button" data-announcement-id="{{{announcementId}}}">' +
-								t('announcementcenter', 'Delete') +
-							'</a>' +
+							'<a href="#" role="button" class="announcement-delete" ' +
+								'data-announcement-id="{{{announcementId}}}"></a>' +
 						'</span>' +
 					'{{/if}}' +
 				'</em>' +
