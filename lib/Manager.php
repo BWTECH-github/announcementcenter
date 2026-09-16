@@ -55,6 +55,18 @@ class Manager {
 			throw new \InvalidArgumentException('Invalid subject', 2);
 		}
 
+		/*
+		 * Der Text hatte keine Grenze. Die Spalte ist ein LONGTEXT, angenommen
+		 * wurde also alles - und jede Ankuendigung wird anschliessend an jedes
+		 * Konto der Instanz verteilt: in die Glocke, in den Aktivitaetenstrom
+		 * und in die Sammelmail. Ein versehentlich eingefuegtes Protokoll von
+		 * ein paar Megabyte vervielfacht sich damit ueber alle Konten. 8000
+		 * Zeichen sind fuer eine Ankuendigung reichlich.
+		 */
+		if (isset($message[8000])) {
+			throw new \InvalidArgumentException('Invalid message', 3);
+		}
+
 		$queryBuilder = $this->connection->getQueryBuilder();
 		$queryBuilder->insert('announcements')
 			->values([
@@ -137,10 +149,18 @@ class Manager {
 	 * @return array
 	 */
 	public function getAnnouncements($limit = 15, $offset = 0, $parseStrings = true) {
+		/*
+		 * Sortiert wird nach der Kennung, nicht nach der Zeit. Die Seitengrenze
+		 * unten arbeitet mit "announcement_id < offset"; sortierte man nach der
+		 * Zeit, passten Reihenfolge und Grenze nicht zusammen, und zwei im
+		 * selben Sekundentakt angelegte Ankuendigungen konnten beim Blaettern
+		 * dauerhaft uebersprungen werden. Die Kennung waechst monoton mit der
+		 * Zeit, die Anzeige aendert sich dadurch nicht.
+		 */
 		$queryBuilder = $this->connection->getQueryBuilder();
 		$query = $queryBuilder->select('*')
 			->from('announcements')
-			->orderBy('announcement_time', 'DESC')
+			->orderBy('announcement_id', 'DESC')
 			->setMaxResults($limit);
 
 		if ($offset > 0) {
@@ -169,7 +189,19 @@ class Manager {
 	 * @return string
 	 */
 	protected function parseMessage($message) {
-		return \str_replace("\n", '<br />', \str_replace(['<', '>'], ['&lt;', '&gt;'], $message));
+		/*
+		 * htmlspecialchars statt der fruehreren Ersetzung von nur < und >: die
+		 * liess das kaufmaennische Und stehen, und damit veraenderte die
+		 * Anzeige den getippten Text. Wer "A&amp;B" schrieb, las hinterher
+		 * "A&B", wer "&lt;b&gt;" schrieb, las "<b>". Erst maskieren, dann die
+		 * gewollten Zeilenumbrueche setzen - andersherum wuerden sie selbst zu
+		 * Text.
+		 */
+		return \str_replace(
+			"\n",
+			'<br />',
+			\htmlspecialchars($message, \ENT_QUOTES, 'UTF-8')
+		);
 	}
 
 	/**
@@ -177,6 +209,11 @@ class Manager {
 	 * @return string
 	 */
 	protected function parseSubject($subject) {
-		return \str_replace("\n", ' ', \str_replace(['<', '>'], ['&lt;', '&gt;'], $subject));
+		// Wie parseMessage, nur ohne Zeilenumbrueche: ein Betreff ist einzeilig.
+		return \str_replace(
+			"\n",
+			' ',
+			\htmlspecialchars($subject, \ENT_QUOTES, 'UTF-8')
+		);
 	}
 }

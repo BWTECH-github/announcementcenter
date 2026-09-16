@@ -1,29 +1,48 @@
-#subject {
-	width: 720px;
+/*
+ * Modified by BW-Tech GmbH on 2026-09-16.
+ * Changes:
+ *   - fluid field widths instead of a fixed 720px that overflowed the shell
+ *   - delete link stays visible; hiding it made it unreachable on touch
+ *   - colours come from the owncloud.online design tokens
+ */
+
+/*
+ * Feste Breiten sprengten die Schale: unterhalb von etwa 800 Pixeln ragten
+ * Betreff- und Textfeld über den Inhaltsbereich hinaus und die Seite bekam
+ * einen waagerechten Rollbalken. Der Kern klammert allgemeine Eingabefelder
+ * nicht ab, die Begrenzung gehört deshalb hierher.
+ */
+#subject,
+#message {
+	width: 100%;
+	max-width: 720px;
+	box-sizing: border-box;
 }
 
+/* Statt fester Höhe: Mindesthöhe, damit das Feld mitwachsen darf. */
 #message {
-	width: 720px;
-	height: 350px;
+	min-height: 200px;
+	resize: vertical;
 }
 
 #app-content hr {
 	width: 85%;
 	border: none;
-	border-bottom: solid 1px #ddd;
+	border-bottom: solid 1px var(--oco-border-section, #e8ecf2);
 }
 
 #announcement_submit_msg.success {
-	color: #fff;
-	background-color: #2e7d32;
-	border-radius: 3px;
-	padding: 3px;
+	color: var(--oco-success-ink, #00806b);
+	background-color: var(--oco-success-bg, #EAFBF6);
+	border-radius: var(--oco-radius-sm, 8px);
+	padding: 3px 8px;
 }
+
 #announcement_submit_msg.error {
-	color: #fff;
-	background-color: #d2322d;
-	border-radius: 3px;
-	padding: 3px;
+	color: var(--oco-danger-ink, #b23b3b);
+	background-color: var(--oco-danger-bg, #FDECEC);
+	border-radius: var(--oco-radius-sm, 8px);
+	padding: 3px 8px;
 }
 
 .emptycontent-admin {
@@ -31,11 +50,21 @@
 	margin-top: 50px !important;
 }
 
-.announcementcenter .delete-link {
-	opacity: 0;
+/*
+ * Der Löschen-Schalter stand auf opacity: 0 und erschien erst beim Überfahren
+ * mit der Maus. Auf einem Tablet oder Telefon gibt es kein Überfahren: dort
+ * war er unauffindbar, bis man ihn zufällig traf - und löschte dann sofort.
+ * Er bleibt jetzt sichtbar, aber zurückhaltend, und tritt beim Überfahren und
+ * bei Tastaturfokus hervor.
+ */
+.announcementcenter .delete-link a {
+	color: var(--oco-text-secondary, #5b6675);
+	text-decoration: none;
 }
 
-.announcementcenter .section:hover .delete-link,
-.announcementcenter .section:focus-within .delete-link {
-	opacity: 1;
+.announcementcenter .section:hover .delete-link a,
+.announcementcenter .delete-link a:hover,
+.announcementcenter .delete-link a:focus {
+	color: var(--oco-danger-ink, #b23b3b);
+	text-decoration: underline;
 }

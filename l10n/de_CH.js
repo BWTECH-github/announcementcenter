@@ -15,6 +15,20 @@ OC.L10N.register(
     "Add announcement" : "Ankündigungen machen",
     "Subject…" : "Betreff…",
     "Your announcement…" : "Deine Ankündigungen…",
-    "Announce" : "Ankündigen"
+    "Announce" : "Ankündigen",
+    "Announcement Center" : "Ankündigungen",
+    "Subject" : "Betreff",
+    "Announcement deleted" : "Ankündigung gelöscht",
+    "Delete announcement" : "Ankündigung löschen",
+    "The subject is too long" : "Der Betreff ist zu lang",
+    "The subject is empty" : "Der Betreff fehlt",
+    "The announcement is too long" : "Die Ankündigung ist zu lang",
+    "Your announcement" : "Ihre Ankündigung",
+    "Delete announcement {subject}" : "Ankündigung {subject} löschen",
+    "Delete the announcement \"{subject}\"? This cannot be undone." : "Die Ankündigung „{subject}“ löschen? Das lässt sich nicht rückgängig machen.",
+    "Please enter a subject." : "Bitte geben Sie einen Betreff ein.",
+    "The announcement could not be saved." : "Die Ankündigung konnte nicht gespeichert werden.",
+    "The announcement could not be deleted." : "Die Ankündigung konnte nicht gelöscht werden.",
+    "Your session has expired. Please reload the page." : "Ihre Sitzung ist abgelaufen. Bitte laden Sie die Seite neu."
 },
 "nplurals=2; plural=(n != 1);");
