@@ -99,6 +99,27 @@ class ManagerTest extends TestCase {
 	}
 
 	/**
+	 * Ohne ENT_SUBSTITUTE liefert htmlspecialchars für ungültiges UTF-8 eine
+	 * leere Zeichenkette: die Ankündigung wäre still leer. Jetzt steht dort
+	 * das Ersatzzeichen, der Rest bleibt lesbar. Direkt über die Maskierung
+	 * geprüft, weil nicht jede Datenbank ungültige Bytes speichert.
+	 */
+	public function testParseReplacesInvalidUtf8() {
+		$ersatz = "\u{FFFD}";
+		$parseSubject = new \ReflectionMethod($this->manager, 'parseSubject');
+		$parseMessage = new \ReflectionMethod($this->manager, 'parseMessage');
+
+		$this->assertSame(
+			'a' . $ersatz . 'b &amp;',
+			$parseSubject->invoke($this->manager, "a\xffb &")
+		);
+		$this->assertSame(
+			'a' . $ersatz . '<br />b',
+			$parseMessage->invoke($this->manager, "a\xff\nb")
+		);
+	}
+
+	/**
 	 * Die Seitengrenze arbeitet mit der Kennung, also muss auch nach der
 	 * Kennung sortiert werden. Nach der Zeit sortiert kam eine später
 	 * angelegte Ankündigung mit älterem Zeitstempel hinter die ältere.

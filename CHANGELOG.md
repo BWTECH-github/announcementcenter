@@ -58,6 +58,11 @@ Sortierung und die neuen Fehlermeldungen ab.
   Kennung, mit der auch die Seitengrenze arbeitet — vorher nach der Zeit.
 - Die Fehlermeldung beim Anlegen sagt, was fehlt (Betreff leer, Betreff zu
   lang, Text zu lang) statt immer "The subject is too long or empty".
+- Ein gespeicherter Text mit ungültiger UTF-8-Sequenz (auf SQLite möglich,
+  etwa aus einer Latin-1-Zwischenablage) zeigt das Ersatzzeichen an der
+  kaputten Stelle statt einer leeren Ankündigung: `htmlspecialchars` läuft
+  mit `ENT_SUBSTITUTE`. Vorher scheiterte `json_encode` an dem Byte und die
+  ganze Liste antwortete mit HTTP 500.
 
 ### Changed
 
