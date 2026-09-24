@@ -14,7 +14,14 @@ style('announcementcenter', 'style');
 				print_unescaped($this->inc('part.add'));
 			} ?>
 
-			<div id="emptycontent" class="<?php if ($_['is_admin']): ?>emptycontent-admin <?php endif; ?>hidden">
+			<?php
+			/*
+			 * role="status": dieser Block wird ein- und ausgeblendet, während
+			 * die Seite steht - etwa nach dem Löschen der letzten Ankündigung.
+			 * Ohne die Rolle erfährt eine Sprachausgabe davon nichts.
+			 */
+			?>
+			<div id="emptycontent" role="status" class="<?php if ($_['is_admin']): ?>emptycontent-admin <?php endif; ?>hidden">
 				<h2><?php p($l->t('No Announcements')); ?></h2>
 				<p><?php p($l->t('There are currently no announcements…')); ?></p>
 			</div>

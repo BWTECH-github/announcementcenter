@@ -236,37 +236,48 @@ class PageControllerTest extends TestCase {
 		$this->assertEquals(Http::STATUS_OK, $response->getStatus());
 	}
 
+	/**
+	 * Die Meldung nennt den Grund: Manager::announce() setzt dafür den Code
+	 * (1 Betreff zu lang, 2 Betreff leer, 3 Text zu lang).
+	 */
 	public function dataAddThrows() {
 		return [
-			['', ['error' => 'The subject is too long or empty']],
-			[\str_repeat('a', 513), ['error' => 'The subject is too long or empty']],
+			['', '', 2, ['error' => 'The subject is empty']],
+			[\str_repeat('a', 513), '', 1, ['error' => 'The subject is too long']],
+			['subject', \str_repeat('a', 8001), 3, ['error' => 'The announcement is too long']],
+			['', '', 0, ['error' => 'The subject is empty']],
 		];
 	}
 
 	/**
 	 * @dataProvider dataAddThrows
 	 * @param string $subject
+	 * @param string $message
+	 * @param int $code
 	 * @param array $expectedData
 	 */
-	public function testAddThrows($subject, array $expectedData) {
+	public function testAddThrows($subject, $message, $code, array $expectedData) {
 		$this->manager->expects($this->once())
 			->method('announce')
-			->with($subject, '', 'author', $this->anything())
-			->willThrowException(new \InvalidArgumentException());
+			->with($subject, $message, 'author', $this->anything())
+			->willThrowException(new \InvalidArgumentException('', $code));
+		$this->jobList->expects($this->never())
+			->method('add');
 
 		$controller = $this->getController(['createPublicity']);
 		$controller->expects($this->never())
 			->method('createPublicity');
 
-		$response = $controller->add($subject, '');
+		$response = $controller->add($subject, $message);
 
 		$this->assertInstanceOf('OCP\AppFramework\Http\JSONResponse', $response);
+		$this->assertSame(Http::STATUS_BAD_REQUEST, $response->getStatus());
 		$this->assertSame($expectedData, $response->getData());
 	}
 
 	public function dataAdd() {
 		return [
-			['', '', true, ['error' => 'The subject is too long or empty']],
+			['', '', true, ['error' => 'The subject is empty']],
 			['subject', 'message', false, []],
 		];
 	}

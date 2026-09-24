@@ -23,6 +23,7 @@ namespace OCA\AnnouncementCenter;
 
 use OC\BackgroundJob\QueuedJob;
 use OCP\Activity\IManager;
+use OCP\IConfig;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -31,6 +32,9 @@ use OCP\Notification\IManager as INotificationManager;
 class BackgroundJob extends QueuedJob {
 	/** @var INotificationManager */
 	protected $notificationManager;
+
+	/** @var IConfig */
+	protected $config;
 
 	/** @var IUserManager */
 	private $userManager;
@@ -50,13 +54,15 @@ class BackgroundJob extends QueuedJob {
 	 * @param INotificationManager $notificationManager
 	 * @param IURLGenerator $urlGenerator
 	 * @param Manager $manager
+	 * @param IConfig $config
 	 */
-	public function __construct(IUserManager $userManager, IManager $activityManager, INotificationManager $notificationManager, IURLGenerator $urlGenerator, Manager $manager) {
+	public function __construct(IUserManager $userManager, IManager $activityManager, INotificationManager $notificationManager, IURLGenerator $urlGenerator, Manager $manager, IConfig $config) {
 		$this->userManager = $userManager;
 		$this->activityManager = $activityManager;
 		$this->notificationManager = $notificationManager;
 		$this->urlGenerator = $urlGenerator;
 		$this->manager = $manager;
+		$this->config = $config;
 	}
 
 	/**
@@ -100,6 +106,10 @@ class BackgroundJob extends QueuedJob {
 			->setLink($this->urlGenerator->linkToRoute('announcementcenter.page.index'));
 
 		$this->userManager->callForAllUsers(function (IUser $user) use ($authorId, $event, $notification) {
+			if ($this->istGast($user->getUID())) {
+				return;
+			}
+
 			$event->setAffectedUser($user->getUID());
 			$this->activityManager->publish($event);
 
@@ -108,5 +118,29 @@ class BackgroundJob extends QueuedJob {
 				$this->notificationManager->notify($notification);
 			}
 		});
+	}
+
+	/**
+	 * Ist dieses Konto ein Gastkonto?
+	 *
+	 * Ankuendigungen richten sich an die eigene Organisation. Gaeste sind
+	 * Externe - Kunden, Lieferanten, Projektpartner -, und die guests-App
+	 * sperrt ihnen diese App ueberdies aus: 'announcementcenter' steht weder in
+	 * AppWhitelist::CORE_WHITELIST noch in DEFAULT_WHITELIST. Ohne diese
+	 * Pruefung bekam ein Gast den vollstaendigen Ankuendigungstext in Glocke,
+	 * Aktivitaetenstrom und Sammelmail - und landete beim Klick darauf auf
+	 * einer Seite mit HTTP 403.
+	 *
+	 * Geprueft wird die Kern-Einstellung, nicht die App: so bleibt diese App
+	 * auch auf einer Instanz ohne guests lauffaehig.
+	 *
+	 * Die Falle bei diesem Wert: er ist '1' oder gar nicht gesetzt, aber auf
+	 * aelteren Bestaenden auch NULL. Ein Vergleich auf '0' faengt NULL nicht.
+	 *
+	 * @param string $uid
+	 * @return bool
+	 */
+	protected function istGast($uid) {
+		return $this->config->getUserValue($uid, 'owncloud', 'isGuest', '0') === '1';
 	}
 }

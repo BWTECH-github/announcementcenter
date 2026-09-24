@@ -69,6 +69,51 @@ class ManagerTest extends TestCase {
 		$this->manager->announce(\str_repeat('a', 513), '', '', 0);
 	}
 
+	/**
+	 * Der Text hatte keine Grenze und wird an jedes Konto verteilt.
+	 */
+	public function testAnnounceMessageTooLong() {
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionCode(3);
+
+		$this->manager->announce('subject', \str_repeat('a', 8001), 'author', 0);
+	}
+
+	public function testAnnounceMessageAtLimit() {
+		$announcement = $this->manager->announce('subject', \str_repeat('a', 8000), 'author', \time());
+		$this->manager->delete($announcement['id']);
+
+		$this->assertSame(8000, \strlen($announcement['message']));
+	}
+
+	/**
+	 * Vorher wurden nur < und > ersetzt: aus getipptem "A&amp;B" wurde in der
+	 * Anzeige "A&B". Jetzt wird vollständig maskiert.
+	 */
+	public function testAnnouncementEscapesAmpersandAndQuotes() {
+		$announcement = $this->manager->announce('A&amp;B "x"', "C&D\n'y'", 'author', \time());
+		$this->manager->delete($announcement['id']);
+
+		$this->assertSame('A&amp;amp;B &quot;x&quot;', $announcement['subject']);
+		$this->assertSame('C&amp;D<br />&#039;y&#039;', $announcement['message']);
+	}
+
+	/**
+	 * Die Seitengrenze arbeitet mit der Kennung, also muss auch nach der
+	 * Kennung sortiert werden. Nach der Zeit sortiert kam eine später
+	 * angelegte Ankündigung mit älterem Zeitstempel hinter die ältere.
+	 */
+	public function testGetAnnouncementsOrderedById() {
+		$erste = $this->manager->announce('erste', '', 'author', 2000000000);
+		$zweite = $this->manager->announce('zweite', '', 'author', 1000000000);
+
+		$liste = $this->manager->getAnnouncements(2);
+		$this->manager->delete($erste['id']);
+		$this->manager->delete($zweite['id']);
+
+		$this->assertSame([$zweite['id'], $erste['id']], \array_column($liste, 'id'));
+	}
+
 	public function testAnnouncement() {
 		$subject = 'subject' . "\n<html>";
 		$message = 'message' . "\n<html>";

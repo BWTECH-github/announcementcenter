@@ -1,9 +1,24 @@
-#subject {
-	width: 720px;
+/*
+ * Modified by BW-Tech GmbH on 2026-09-24.
+ * Changes:
+ *   - fluid field widths instead of a fixed 720px that overflowed the content area
+ *   - delete link stays visible; hiding it made it unreachable on touch
+ */
+
+/*
+ * Feste Breiten sprengten den Inhaltsbereich: unterhalb von etwa 800 Pixeln
+ * ragten Betreff- und Textfeld darüber hinaus und die Seite bekam einen
+ * waagerechten Rollbalken. Der Kern klammert allgemeine Eingabefelder nicht
+ * ab, die Begrenzung gehört deshalb hierher.
+ */
+#subject,
+#message {
+	width: 100%;
+	max-width: 720px;
+	box-sizing: border-box;
 }
 
 #message {
-	width: 720px;
 	height: 350px;
 }
 
@@ -31,11 +46,13 @@
 	margin-top: 50px !important;
 }
 
-.announcementcenter .delete-link {
-	opacity: 0;
-}
-
-.announcementcenter .section:hover .delete-link,
-.announcementcenter .section:focus-within .delete-link {
-	opacity: 1;
+/*
+ * Der Löschen-Schalter stand auf opacity: 0 und erschien erst beim Überfahren
+ * mit der Maus. Auf einem Tablet oder Telefon gibt es kein Überfahren: dort
+ * war er unauffindbar, bis man ihn zufällig traf. Er bleibt jetzt sichtbar
+ * und wird beim Überfahren und bei Tastaturfokus unterstrichen.
+ */
+.announcementcenter .delete-link a:hover,
+.announcementcenter .delete-link a:focus {
+	text-decoration: underline;
 }
