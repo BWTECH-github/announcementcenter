@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.3.6] - 2026-10-08
+
+Version für ein Testpaket angehoben, keine Funktionsänderung gegenüber 1.3.4.
+
 ## [1.3.4] - 2026-09-24
 
 Rückportiert aus der Redesign-Linie (dort 1.3.4 vom 16.09.2026), ohne deren
