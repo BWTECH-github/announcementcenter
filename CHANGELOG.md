@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.2] - 2026-10-08
+
+Stand der main-Linie (1.3.4 vom 24.09.2026) übernommen.
+
+### Behoben
+
+- Ein gespeicherter Text mit ungültiger UTF-8-Sequenz (auf SQLite möglich,
+  etwa aus einer Latin-1-Zwischenablage) zeigt das Ersatzzeichen an der
+  kaputten Stelle statt einer leeren Ankündigung: `htmlspecialchars` läuft
+  mit `ENT_SUBSTITUTE`. Vorher scheiterte `json_encode` an dem Byte und die
+  ganze Liste antwortete mit HTTP 500.
+
+### Tests
+
+- Unit-Tests aus der main-Linie für Gastausschluss, Längengrenze, Maskierung
+  (auch mit ungültigem UTF-8), Sortierung und Fehlermeldungen.
+
 ## [2.0.1] - 2026-10-08
 
 ### Behoben

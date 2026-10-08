@@ -196,11 +196,19 @@ class Manager {
 		 * "A&B", wer "&lt;b&gt;" schrieb, las "<b>". Erst maskieren, dann die
 		 * gewollten Zeilenumbrueche setzen - andersherum wuerden sie selbst zu
 		 * Text.
+		 *
+		 * ENT_SUBSTITUTE: ohne die Option liefert htmlspecialchars für einen
+		 * Text mit ungültiger UTF-8-Sequenz eine leere Zeichenkette, die
+		 * Ankündigung wäre dann still leer. Mit der Option steht an der
+		 * Stelle des kaputten Bytes das Ersatzzeichen U+FFFD; der Rest des
+		 * Textes bleibt lesbar, und json_encode kommt mit der Ausgabe zurecht.
+		 * Erreichbar ist das auf SQLite, das ungültige Bytes beim Einfügen
+		 * nicht abweist.
 		 */
 		return \str_replace(
 			"\n",
 			'<br />',
-			\htmlspecialchars($message, \ENT_QUOTES, 'UTF-8')
+			\htmlspecialchars($message, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')
 		);
 	}
 
@@ -213,7 +221,7 @@ class Manager {
 		return \str_replace(
 			"\n",
 			' ',
-			\htmlspecialchars($subject, \ENT_QUOTES, 'UTF-8')
+			\htmlspecialchars($subject, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')
 		);
 	}
 }

@@ -23,6 +23,7 @@ namespace OCA\AnnouncementCenter\Tests\Unit;
 
 use OCA\AnnouncementCenter\Manager;
 use OCP\Activity\IManager;
+use OCP\IConfig;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
@@ -44,6 +45,10 @@ class BackgroundJobTest extends TestCase {
 	protected $urlGenerator;
 	/** @var Manager|\PHPUnit\Framework\MockObject\MockObject */
 	protected $manager;
+	/** @var IConfig|\PHPUnit\Framework\MockObject\MockObject */
+	protected $config;
+	/** @var array Wert von owncloud/isGuest je Konto */
+	protected $isGuest = [];
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -63,6 +68,15 @@ class BackgroundJobTest extends TestCase {
 		$this->manager = $this->getMockBuilder('OCA\AnnouncementCenter\Manager')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->isGuest = [];
+		$this->config = $this->createMock(IConfig::class);
+		$this->config->method('getUserValue')
+			->willReturnCallback(function ($uid, $app, $key, $default = '') {
+				if ($app === 'owncloud' && $key === 'isGuest' && \array_key_exists($uid, $this->isGuest)) {
+					return $this->isGuest[$uid];
+				}
+				return $default;
+			});
 	}
 
 	protected function getJob(array $methods = []) {
@@ -72,7 +86,8 @@ class BackgroundJobTest extends TestCase {
 				$this->activityManager,
 				$this->notificationManager,
 				$this->urlGenerator,
-				$this->manager
+				$this->manager,
+				$this->config
 			);
 		} else {
 			return $this->getMockBuilder('OCA\AnnouncementCenter\BackgroundJob')
@@ -82,6 +97,7 @@ class BackgroundJobTest extends TestCase {
 					$this->notificationManager,
 					$this->urlGenerator,
 					$this->manager,
+					$this->config,
 				])
 				->setMethods($methods)
 				->getMock();
@@ -230,5 +246,60 @@ class BackgroundJobTest extends TestCase {
 			->method('notify');
 
 		$this->invokePrivate($job, 'createPublicity', [10, 'author', 1337]);
+	}
+
+	/**
+	 * Gastkonten bekommen weder Aktivität noch Benachrichtigung. Ein Gast ist
+	 * extern, und die guests-App sperrt ihm die App ohnehin; vorher las er den
+	 * Volltext trotzdem in Glocke, Aktivitätenstrom und Sammelmail. Nur '1'
+	 * gilt als Gast, ein NULL aus älteren Beständen nicht.
+	 */
+	public function testCreatePublicitySkipsGuests() {
+		$this->isGuest = [
+			'guest@example.com' => '1',
+			'u2' => '0',
+			'u3' => null,
+		];
+
+		$betroffen = [];
+		$event = $this->createMock('OCP\Activity\IEvent');
+		foreach (['setApp', 'setType', 'setAuthor', 'setTimestamp', 'setSubject', 'setMessage', 'setObject'] as $methode) {
+			$event->method($methode)->willReturnSelf();
+		}
+		$event->expects($this->exactly(3))
+			->method('setAffectedUser')
+			->willReturnCallback(function ($uid) use (&$betroffen, $event) {
+				$betroffen[] = $uid;
+				return $event;
+			});
+
+		$benachrichtigt = [];
+		$notification = $this->createMock('OCP\Notification\INotification');
+		foreach (['setApp', 'setDateTime', 'setObject', 'setSubject', 'setLink'] as $methode) {
+			$notification->method($methode)->willReturnSelf();
+		}
+		$notification->expects($this->exactly(2))
+			->method('setUser')
+			->willReturnCallback(function ($uid) use (&$benachrichtigt, $notification) {
+				$benachrichtigt[] = $uid;
+				return $notification;
+			});
+
+		$this->activityManager->method('generateEvent')->willReturn($event);
+		$this->notificationManager->method('createNotification')->willReturn($notification);
+		$this->userManager->expects($this->once())
+			->method('callForAllUsers')
+			->willReturnCallback(function ($callback) {
+				foreach (['author', 'guest@example.com', 'u2', 'u3'] as $uid) {
+					$callback($this->getUserMock($uid, $uid));
+				}
+			});
+		$this->activityManager->expects($this->exactly(3))->method('publish');
+		$this->notificationManager->expects($this->exactly(2))->method('notify');
+
+		$this->invokePrivate($this->getJob(), 'createPublicity', [10, 'author', 1337]);
+
+		$this->assertSame(['author', 'u2', 'u3'], $betroffen);
+		$this->assertSame(['u2', 'u3'], $benachrichtigt);
 	}
 }
