@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.1] - 2026-10-08
+
+### Behoben
+
+- Lange Wörter, Adressen und Links in Betreff, Autorzeile und Text einer
+  Ankündigung brechen um. Unter 768 px schneidet der Kern den Inhaltsbereich
+  waagerecht ab; ein überstehendes Wort war dort weder lesbar noch
+  erreichbar.
+
 ## [1.3.4] - 2026-09-16
 
 Vollständiger Durchgang am laufenden Produkt; die Befunde sind mit
