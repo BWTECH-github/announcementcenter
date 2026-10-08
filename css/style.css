@@ -96,3 +96,15 @@
 	border-color: var(--oco-danger-ink, #b23b3b);
 	background-image: url('../img/delete-white.svg');
 }
+
+/*
+ * Lange Wörter, Adressen und Links in Betreff und Text brechen um. Unter
+ * 768 Pixeln schneidet der Kern den Inhaltsbereich waagerecht ab
+ * (overflow-x: hidden); ein überstehendes Wort war dort weder lesbar noch
+ * erreichbar.
+ */
+.announcementcenter .section h2,
+.announcementcenter .section p,
+.announcementcenter .section em {
+	overflow-wrap: anywhere;
+}
