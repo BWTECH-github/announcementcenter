@@ -99,6 +99,12 @@ class Extension implements IExtension {
 			try {
 				$announcement = $this->manager->getAnnouncement((int)$id, true);
 			} catch (\InvalidArgumentException $e) {
+				// Gelöschte Ankündigung: der Hinweis gehört in den Betreff. Die
+				// Nachricht derselben Aktivität lief ebenfalls hier durch, und
+				// der Strom zeigte den Satz zweimal untereinander.
+				if (\strpos($text, 'announcementmessage#') === 0) {
+					return '';
+				}
 				return (string) $l->t('Announcement does not exist anymore', $params);
 			}
 

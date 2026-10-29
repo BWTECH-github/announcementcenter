@@ -129,6 +129,7 @@ class ExtensionTest extends TestCase {
 				'message' => 'Message #10',
 			], 'user', '<user display-name="Author Two">author2</user> announced <parameter>Subject #10</parameter>'],
 			['announcementcenter', 'announcementsubject#10', [], false, false, '', false, null, 'Announcement does not exist anymore'],
+			['announcementcenter', 'announcementmessage#10', [], false, false, '', false, null, ''],
 			['announcementcenter', 'announcementmessage#10', [], false, false, '', [
 				'subject' => 'Subject #10',
 				'author' => 'author2',

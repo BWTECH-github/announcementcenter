@@ -36,6 +36,6 @@
 	 * JavaScript fängt submit ab und veröffentlicht.
 	 */
 	?>
-	<input type="submit" id="submit_announcement" value="<?php p($l->t('Announce')); ?>" name="submit" />
+	<input type="submit" id="submit_announcement" class="primary" value="<?php p($l->t('Announce')); ?>" name="submit" />
 	<span id="announcement_submit_msg" class="msg" role="status" aria-live="polite"></span>
 </form>

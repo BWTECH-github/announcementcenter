@@ -25,8 +25,12 @@
 	resize: vertical;
 }
 
-#app-content hr {
-	width: 85%;
+/* Die Trennlinie steht zwischen zwei .section und fluchtet mit deren Inhalt
+   (Polster der .section: 30px). Mit width: 85% stand sie mittig und begann
+   rechts neben Überschrift und Text. */
+.announcementcenter #app-content-wrapper > hr {
+	width: auto;
+	margin: 0 30px;
 	border: none;
 	border-bottom: solid 1px var(--oco-border-section, #e8ecf2);
 }

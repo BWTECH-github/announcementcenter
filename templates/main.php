@@ -8,7 +8,16 @@ style('announcementcenter', 'style');
 ?>
 
 <div id="app" class="announcementcenter">
-	<div id="app-content">
+	<?php
+	/*
+	 * #app-content ist der Rollbereich der Seite. Wer nicht ankündigen darf,
+	 * hat darin nichts Fokussierbares - mit der Tastatur ließ sich eine lange
+	 * Liste dann nicht rollen (WCAG 2.1.1, axe scrollable-region-focusable).
+	 * Der Bereich wird deshalb selbst ein benannter Halt. Mit Formular und
+	 * Löschknöpfen folgt das Rollen dem Fokus, dort bleibt er ohne tabindex.
+	 */
+	?>
+	<div id="app-content"<?php if (!$_['is_admin']): ?> tabindex="0" role="region" aria-label="<?php p($l->t('Announcements')); ?>"<?php endif; ?>>
 		<div id="app-content-wrapper">
 			<?php if ($_['is_admin']) {
 				print_unescaped($this->inc('part.add'));
