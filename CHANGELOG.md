@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.5] - 2026-11-13
+
+### Behoben
+
+- „Ankündigung löschen“ per Leertaste öffnet die Rückfrage nur einmal statt zweimal übereinander.
+
 ## [2.0.4] - 2026-11-04
 
 ### Geändert

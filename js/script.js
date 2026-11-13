@@ -150,14 +150,6 @@
 				e.preventDefault();
 				self.deleteAnnouncement($(this));
 			});
-			// Ein Anker mit role="button" muss auch auf die Leertaste hören -
-			// Enter kommt beim Anker von selbst, die Leertaste nicht.
-			$link.on('keydown', function(e) {
-				if (e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 32) {
-					e.preventDefault();
-					$(this).trigger('click');
-				}
-			});
 		},
 
 		/**
