@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.3.7] - 2026-11-16
+
+### Fixed
+
+- Der Menüeintrag heißt übersetzt „Ankündigungen“ statt „Announcementcenter“
+  (eigener Name in `<navigation>` der info.xml).
+
 ## [1.3.6] - 2026-10-08
 
 Version für ein Testpaket angehoben, keine Funktionsänderung gegenüber 1.3.4.
