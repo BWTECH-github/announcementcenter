@@ -238,14 +238,15 @@ class PageControllerTest extends TestCase {
 
 	/**
 	 * Die Meldung nennt den Grund: Manager::announce() setzt dafür den Code
-	 * (1 Betreff zu lang, 2 Betreff leer, 3 Text zu lang).
+	 * (1 Betreff zu lang, 2 Betreff leer, 3 Text zu lang); "field" das Feld,
+	 * an dem die Oberfläche sie zeigt.
 	 */
 	public function dataAddThrows() {
 		return [
-			['', '', 2, ['error' => 'The subject is empty']],
-			[\str_repeat('a', 513), '', 1, ['error' => 'The subject is too long']],
-			['subject', \str_repeat('a', 8001), 3, ['error' => 'The announcement is too long']],
-			['', '', 0, ['error' => 'The subject is empty']],
+			['', '', 2, ['error' => 'The subject is empty', 'field' => 'subject']],
+			[\str_repeat('a', 513), '', 1, ['error' => 'The subject is too long', 'field' => 'subject']],
+			['subject', \str_repeat('a', 8001), 3, ['error' => 'The announcement is too long', 'field' => 'message']],
+			['', '', 0, ['error' => 'The subject is empty', 'field' => 'subject']],
 		];
 	}
 

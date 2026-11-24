@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.6] - 2026-11-24
+
+### Behoben
+
+- „Betreff“ und „Deine Ankündigung (optional)“ stehen als Beschriftung über den Feldern; vorher war nach dem ersten Zeichen nicht mehr zu sehen, welches Feld welches ist.
+- Ein fehlender oder zu langer Betreff und ein zu langer Text werden am Feld gemeldet: Das Feld gilt für Sprachausgaben als ungültig, die Meldung hängt daran, und der Fokus steht darin.
+
 ## [2.0.5] - 2026-11-13
 
 ### Behoben

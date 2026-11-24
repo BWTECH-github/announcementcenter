@@ -14,6 +14,10 @@
  *   - keyboard: submit on Enter, delete link as a real button, focus handover
  *   - status messages for delete, reliable empty state, no double submit
  *   - error handling that survives non-JSON responses and expired sessions
+ *
+ * Modified by BW-Tech GmbH on 2026-11-24.
+ * Changes:
+ *   - errors are reported at the field (aria-invalid, aria-describedby)
  */
 
 (function() {
@@ -238,6 +242,26 @@
 		},
 
 		/**
+		 * Markiert ein Feld als fehlerhaft: aria-invalid, die Meldung hängt per
+		 * aria-describedby am Feld (WCAG 3.3.1), der Fokus geht hinein.
+		 *
+		 * @param {string} id subject oder message
+		 */
+		feldfehler: function(id) {
+			$('#' + id).attr({
+				'aria-invalid': 'true',
+				'aria-describedby': 'announcement_submit_msg'
+			}).trigger('focus');
+		},
+
+		/**
+		 * Nimmt die Markierung beider Felder vor dem nächsten Versuch zurück.
+		 */
+		feldfehlerWeg: function() {
+			$('#subject, #message').removeAttr('aria-invalid aria-describedby');
+		},
+
+		/**
 		 * Liest die Fehlermeldung aus einer Antwort - oder liefert den Ersatz.
 		 *
 		 * jQuery füllt responseJSON nur, wenn der Rumpf als JSON lesbar war.
@@ -268,10 +292,11 @@
 			if (this.wirdGesendet) {
 				return;
 			}
+			this.feldfehlerWeg();
 			if ($.trim($('#subject').val()) === '') {
 				OC.msg.finishedError('#announcement_submit_msg',
 					t('announcementcenter', 'Please enter a subject.'));
-				$('#subject').trigger('focus');
+				this.feldfehler('subject');
 				return;
 			}
 			this.wirdGesendet = true;
@@ -318,6 +343,11 @@
 			}).fail(function(response) {
 				OC.msg.finishedError('#announcement_submit_msg', self.fehlertext(response,
 					t('announcementcenter', 'The announcement could not be saved.')));
+				// Betreff leer oder zu lang, Text zu lang: der Server nennt das Feld
+				var feld = response && response.responseJSON && response.responseJSON.field;
+				if (feld === 'subject' || feld === 'message') {
+					self.feldfehler(feld);
+				}
 			}).always(function() {
 				self.wirdGesendet = false;
 				$('#submit_announcement').prop('disabled', false);

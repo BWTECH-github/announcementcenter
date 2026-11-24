@@ -7,25 +7,33 @@
  *   - real submit button so Enter in the subject field announces instead of
  *     reloading the page with the typed text in the query string
  *   - visible-to-screenreader labels instead of aria-label on the field alone
+ *
+ * Modified by BW-Tech GmbH on 2026-11-24.
+ * Changes:
+ *   - visible labels above the fields instead of placeholders; the subject
+ *     is required, the announcement text is marked as optional
  */
 ?>
-<form id="announce" class="section">
+<form id="announce" class="section" novalidate>
 	<h2><?php p($l->t('Add announcement')); ?></h2>
 
 	<?php
 	/*
-	 * Beschriftungen statt bloßer aria-label: der zugängliche Name hängt damit
-	 * nicht mehr am Platzhalter, den manche Sprachausgaben nicht vorlesen, und
-	 * die Beschriftung vergrößert die Trefferfläche des Feldes. Für das Auge
-	 * bleiben sie versteckt, weil der Platzhalter den Zweck bereits zeigt.
+	 * Sichtbare Beschriftungen über den Feldern statt Platzhalter: der
+	 * Platzhalter verschwand mit dem ersten Zeichen, danach war nicht mehr zu
+	 * sehen, welches Feld welches ist (WCAG 3.3.2). Der Betreff ist Pflicht
+	 * (required), der Text trägt „(optional)“. novalidate, weil das Skript
+	 * den fehlenden Betreff selbst am Feld meldet.
 	 */
 	?>
-	<label for="subject" class="hidden-visually"><?php p($l->t('Subject')); ?></label>
-	<input type="text" name="subject" id="subject" placeholder="<?php p($l->t('Subject…')); ?>" />
-	<br />
-	<label for="message" class="hidden-visually"><?php p($l->t('Your announcement')); ?></label>
-	<textarea name="message" id="message" placeholder="<?php p($l->t('Your announcement…')); ?>"></textarea>
-	<br />
+	<div class="announce-field">
+		<label for="subject"><?php p($l->t('Subject')); ?></label>
+		<input type="text" name="subject" id="subject" required />
+	</div>
+	<div class="announce-field">
+		<label for="message"><?php p($l->t('Your announcement')); ?> <span class="announce-optional"><?php p($l->t('(optional)')); ?></span></label>
+		<textarea name="message" id="message"></textarea>
+	</div>
 	<?php
 	/*
 	 * type="submit" statt type="button": in einem Formular mit einem einzeiligen

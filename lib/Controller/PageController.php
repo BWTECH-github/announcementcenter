@@ -133,14 +133,15 @@ class PageController extends Controller {
 			/*
 			 * Die Meldung sagt jetzt, was wirklich fehlt. Vorher stand bei
 			 * jedem Ablehnungsgrund "The subject is too long or empty" - auch
-			 * dann, wenn der Betreff stimmte und der Text zu lang war.
+			 * dann, wenn der Betreff stimmte und der Text zu lang war. "field"
+			 * nennt das Feld, an dem die Oberfläche die Meldung zeigt.
 			 */
-			$meldung = match ($e->getCode()) {
-				1 => (string)$this->l->t('The subject is too long'),
-				3 => (string)$this->l->t('The announcement is too long'),
-				default => (string)$this->l->t('The subject is empty'),
+			[$feld, $meldung] = match ($e->getCode()) {
+				1 => ['subject', (string)$this->l->t('The subject is too long')],
+				3 => ['message', (string)$this->l->t('The announcement is too long')],
+				default => ['subject', (string)$this->l->t('The subject is empty')],
 			};
-			return new JSONResponse(['error' => $meldung], Http::STATUS_BAD_REQUEST);
+			return new JSONResponse(['error' => $meldung, 'field' => $feld], Http::STATUS_BAD_REQUEST);
 		}
 
 		$this->jobList->add('OCA\AnnouncementCenter\BackgroundJob', ['id' => $announcement['id']]);

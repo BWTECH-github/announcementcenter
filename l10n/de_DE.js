@@ -29,6 +29,7 @@ OC.L10N.register(
     "Please enter a subject." : "Bitte geben Sie einen Betreff ein.",
     "The announcement could not be saved." : "Die Ankündigung konnte nicht gespeichert werden.",
     "The announcement could not be deleted." : "Die Ankündigung konnte nicht gelöscht werden.",
-    "Your session has expired. Please reload the page." : "Ihre Sitzung ist abgelaufen. Bitte laden Sie die Seite neu."
+    "Your session has expired. Please reload the page." : "Ihre Sitzung ist abgelaufen. Bitte laden Sie die Seite neu.",
+    "(optional)" : "(optional)"
 },
 "nplurals=2; plural=(n != 1);");

@@ -4,7 +4,33 @@
  *   - fluid field widths instead of a fixed 720px that overflowed the shell
  *   - delete link stays visible; hiding it made it unreachable on touch
  *   - colours come from the owncloud.online design tokens
+ *
+ * Modified by BW-Tech GmbH on 2026-11-24.
+ * Changes:
+ *   - visible field labels above subject and announcement
  */
+
+/*
+ * Beschriftung über dem Feld wie im Feldpaar des Kerns (MASSSTAB 3.2). Die
+ * Feldpaar-Regeln des Kerns gelten nur in den Einstellungen und in Dialogen,
+ * deshalb stehen die Werte hier.
+ */
+#announce .announce-field + .announce-field {
+	margin-top: var(--oco-space-3, 12px);
+}
+
+#announce .announce-field label {
+	display: block;
+	margin-bottom: 6px;
+	font: 500 12px/1.35 var(--oco-font-text, system-ui, sans-serif);
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+/* „(optional)“ hinter der Beschriftung, leiser als sie */
+#announce .announce-field .announce-optional {
+	font-weight: 400;
+	color: var(--oco-text-muted, #6a717c);
+}
 
 /*
  * Feste Breiten sprengten die Schale: unterhalb von etwa 800 Pixeln ragten
