@@ -18,6 +18,10 @@
  * Modified by BW-Tech GmbH on 2026-11-24.
  * Changes:
  *   - errors are reported at the field (aria-invalid, aria-describedby)
+ *
+ * Modified by BW-Tech GmbH on 2026-11-25.
+ * Changes:
+ *   - the focus returns to the announce button after sending
  */
 
 (function() {
@@ -350,7 +354,12 @@
 				}
 			}).always(function() {
 				self.wirdGesendet = false;
-				$('#submit_announcement').prop('disabled', false);
+				// Gesperrt verlor der Knopf den Fokus, er stand danach auf <body>
+				// (WCAG 2.4.3). Er kehrt zurück, wenn ihn kein Feldfehler bekommen hat.
+				var $knopf = $('#submit_announcement').prop('disabled', false);
+				if (!document.activeElement || document.activeElement === document.body) {
+					$knopf.trigger('focus');
+				}
 			});
 		},
 
